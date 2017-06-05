@@ -14,7 +14,7 @@
 Summary:	Proprietary driver for Broadcom wireless adapters
 Name:		broadcom-wl-dkms
 Version:	6.30.223.271
-Release:	1%{?dist}
+Release:	2%{?dist}
 Source0:	https://docs.broadcom.com/docs-and-downloads/docs/linux_sta/%{oname}-nodebug-pcoem-%{dwver}.tar.gz
 Source1:	https://docs.broadcom.com/docs-and-downloads/docs/linux_sta/%{oname}_64-nodebug-pcoem-%{dwver}.tar.gz
 Source2:	broadcom-wl-dkms.conf
@@ -33,6 +33,7 @@ Patch5:		wl-kmod-006_gcc_6_fix_indentation_warnings.patch
 Patch6:		wl-kmod-007_kernel_4.8_add_cfg80211_scan_info_struct.patch
 Patch7:		wl-kmod-008_fix_kernel_warnings.patch
 Patch8:		wl-kmod-009_kernel_4.11_remove_last_rx_in_net_device_struct.patch
+Patch9:		wl-kmod-010_kernel_4.12_add_cfg80211_roam_info_struct.patch
 
 # Blob is under a custom license (see LICENSE.txt), everything else
 # is GPLv2 - AdamW 2008/12
@@ -108,6 +109,9 @@ rm -rf %{buildroot}
 %config %{_sysconfdir}/modprobe.d/%{name}.conf
 
 %changelog
+
+* Mon Jun 05 2017 - Unitedrpms Project <unitedrpms AT protonmail DOT com> 6.30.223.271-2
+- Added patch for kernel >= 4.12 - add cfg80211_roam_info struct in wl_bss_roaming_done function
 
 * Tue Apr 11 2017 - David Vasquez <davidjeremias82 AT gmail DOT com>  6.30.223.271-1
 - Initial build
