@@ -14,7 +14,7 @@
 Summary:	Proprietary driver for Broadcom wireless adapters
 Name:		broadcom-wl-dkms
 Version:	6.30.223.271
-Release:	3%{?dist}
+Release:	4%{?dist}
 Source0:	https://docs.broadcom.com/docs-and-downloads/docs/linux_sta/%{oname}-nodebug-pcoem-%{dwver}.tar.gz
 Source1:	https://docs.broadcom.com/docs-and-downloads/docs/linux_sta/%{oname}_64-nodebug-pcoem-%{dwver}.tar.gz
 Source2:	broadcom-wl-dkms.conf
@@ -74,9 +74,13 @@ dest=%{buildroot}/usr/src/${pkgname/-dkms/}-%{version}
 
   install -D -m 644 %{S:2} %{buildroot}/etc/modprobe.d/broadcom-wl-dkms.conf
 
-
 %post 
 
+# rmmod can fail
+/sbin/rmmod %{kname} >/dev/null 2>&1 ||:
+set -x
+/usr/sbin/dkms --rpm_safe_upgrade remove -m %{realname} -v %{version} --all || :
+# now kdms install
 /usr/sbin/dkms --rpm_safe_upgrade add -m %{realname} -v %{version} 
 /usr/sbin/dkms --rpm_safe_upgrade build -m %{realname} -v %{version} 
 /usr/sbin/dkms --rpm_safe_upgrade install -m %{realname} -v %{version}
@@ -109,6 +113,9 @@ rm -rf %{buildroot}
 %config %{_sysconfdir}/modprobe.d/%{name}.conf
 
 %changelog
+
+* Mon Aug 14 2017 - Unitedrpms Project <unitedrpms AT protonmail DOT com> 6.30.223.271-4
+- Changes for an easy update
 
 * Thu Jul 06 2017 - Unitedrpms Project <unitedrpms AT protonmail DOT com> 6.30.223.271-3
 - Rework patch for kernel >= 4.12 - thanks to Tim Thomas
