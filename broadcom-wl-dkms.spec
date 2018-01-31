@@ -14,7 +14,7 @@
 Summary:	Proprietary driver for Broadcom wireless adapters
 Name:		broadcom-wl-dkms
 Version:	6.30.223.271
-Release:	5%{?dist}
+Release:	6%{?dist}
 Source0:	https://docs.broadcom.com/docs-and-downloads/docs/linux_sta/%{oname}-nodebug-pcoem-%{dwver}.tar.gz
 Source1:	https://docs.broadcom.com/docs-and-downloads/docs/linux_sta/%{oname}_64-nodebug-pcoem-%{dwver}.tar.gz
 Source2:	broadcom-wl-dkms.conf
@@ -35,6 +35,7 @@ Patch7:		wl-kmod-008_fix_kernel_warnings.patch
 Patch8:		wl-kmod-009_kernel_4.11_remove_last_rx_in_net_device_struct.patch
 Patch9:		wl-kmod-010_kernel_4.12_add_cfg80211_roam_info_struct.patch
 Patch10:	wl-kmod-011_kernel_4.14_new_kernel_read_function_prototype.patch
+Patch11:	008-linux415.patch
 
 # Blob is under a custom license (see LICENSE.txt), everything else
 # is GPLv2 - AdamW 2008/12
@@ -114,6 +115,9 @@ rm -rf %{buildroot}
 %config %{_sysconfdir}/modprobe.d/%{name}.conf
 
 %changelog
+
+* Tue Jan 30 2018 - Unitedrpms Project <unitedrpms AT protonmail DOT com> 6.30.223.271-6
+- Added patch for kernel >= 4.15 
 
 * Wed Nov 29 2017 - Unitedrpms Project <unitedrpms AT protonmail DOT com> 6.30.223.271-5
 - Added patch for kernel >= 4.14 
