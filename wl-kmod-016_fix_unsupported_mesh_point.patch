@@ -1,0 +1,19 @@
+diff -Naur hybrid-v35_64-nodebug-pcoem-6_30_223_271.orig/src/wl/sys/wl_cfg80211_hybrid.c hybrid-v35_64-nodebug-pcoem-6_30_223_271/src/wl/sys/wl_cfg80211_hybrid.c
+--- hybrid-v35_64-nodebug-pcoem-6_30_223_271.orig/src/wl/sys/wl_cfg80211_hybrid.c	2019-04-14 17:35:23.565460847 +0200
++++ hybrid-v35_64-nodebug-pcoem-6_30_223_271/src/wl/sys/wl_cfg80211_hybrid.c	2019-05-19 17:23:24.985525866 +0200
+@@ -522,6 +522,7 @@
+ 	switch (type) {
+ 	case NL80211_IFTYPE_MONITOR:
+ 	case NL80211_IFTYPE_WDS:
++	case NL80211_IFTYPE_MESH_POINT:
+ 		WL_ERR(("type (%d) : currently we do not support this type\n",
+ 			type));
+ 		return -EOPNOTSUPP;
+@@ -2944,6 +2945,7 @@
+ 	switch (iftype) {
+ 	case NL80211_IFTYPE_MONITOR:
+ 	case NL80211_IFTYPE_WDS:
++	case NL80211_IFTYPE_MESH_POINT:
+ 		WL_ERR(("type (%d) : currently we do not support this mode\n",
+ 			iftype));
+ 		err = -EINVAL;

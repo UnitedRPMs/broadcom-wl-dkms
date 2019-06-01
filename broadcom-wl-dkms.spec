@@ -14,7 +14,7 @@
 Summary:	Proprietary driver for Broadcom wireless adapters
 Name:		broadcom-wl-dkms
 Version:	6.30.223.271
-Release:	6%{?dist}
+Release:	7%{?dist}
 Source0:	https://docs.broadcom.com/docs-and-downloads/docs/linux_sta/%{oname}-nodebug-pcoem-%{dwver}.tar.gz
 Source1:	https://docs.broadcom.com/docs-and-downloads/docs/linux_sta/%{oname}_64-nodebug-pcoem-%{dwver}.tar.gz
 Source2:	broadcom-wl-dkms.conf
@@ -36,6 +36,7 @@ Patch8:		wl-kmod-009_kernel_4.11_remove_last_rx_in_net_device_struct.patch
 Patch9:		wl-kmod-010_kernel_4.12_add_cfg80211_roam_info_struct.patch
 Patch10:	wl-kmod-011_kernel_4.14_new_kernel_read_function_prototype.patch
 Patch11:	008-linux415.patch
+Patch12:	wl-kmod-016_fix_unsupported_mesh_point.patch
 
 # Blob is under a custom license (see LICENSE.txt), everything else
 # is GPLv2 - AdamW 2008/12
@@ -59,6 +60,10 @@ requires manual installation of firmware, or ndiswrapper.
   sed -e "s/@PACKAGE_VERSION@/%{version}/" %{S:3} > dkms.conf
 
   sed -i -e "/BRCM_WLAN_IFNAME/s:eth:wlan:" src/wl/sys/wl_linux.c
+
+# kernel 5.1 fix
+  sed -i 's/get_ds()/KERNEL_DS/g' src/wl/sys/wl_iw.c
+  sed -i 's/get_ds()/KERNEL_DS/g' src/wl/sys/wl_cfg80211_hybrid.c
 
 %build
 
@@ -115,6 +120,10 @@ rm -rf %{buildroot}
 %config %{_sysconfdir}/modprobe.d/%{name}.conf
 
 %changelog
+
+* Sat Jun 01 2019 - Unitedrpms Project <unitedrpms AT protonmail DOT com> 6.30.223.271-7
+- Added patch for the new wpa_supplicant
+- Fixes for kernel 5.1
 
 * Tue Jan 30 2018 - Unitedrpms Project <unitedrpms AT protonmail DOT com> 6.30.223.271-6
 - Added patch for kernel >= 4.15 
