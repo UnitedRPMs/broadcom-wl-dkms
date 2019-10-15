@@ -14,14 +14,14 @@
 Summary:	Proprietary driver for Broadcom wireless adapters
 Name:		broadcom-wl-dkms
 Version:	6.30.223.271
-Release:	7%{?dist}
+Release:	9%{?dist}
 Source0:	https://docs.broadcom.com/docs-and-downloads/docs/linux_sta/%{oname}-nodebug-pcoem-%{dwver}.tar.gz
 Source1:	https://docs.broadcom.com/docs-and-downloads/docs/linux_sta/%{oname}_64-nodebug-pcoem-%{dwver}.tar.gz
 Source2:	broadcom-wl-dkms.conf
 Source3:	dkms.conf.in
 Provides:	kmod(%{kname}.ko) = %{version}
-Requires(post):		dkms
-Requires(preun):	dkms
+Requires:	dkms
+Requires:	kernel-devel
 Conflicts:	wl-kmod broadcom-wl
 
 Patch:		license.patch
@@ -86,28 +86,17 @@ dest=%{buildroot}/usr/src/${pkgname/-dkms/}-%{version}
 # rmmod can fail
 /sbin/rmmod %{kname} >/dev/null 2>&1 ||:
 set -x
-/usr/sbin/dkms --rpm_safe_upgrade remove -m %{realname} -v %{version} --all || :
+/usr/sbin/dkms remove -m %{realname} -v %{version} -q --all || :
 # now kdms install
-/usr/sbin/dkms --rpm_safe_upgrade add -m %{realname} -v %{version} 
-/usr/sbin/dkms --rpm_safe_upgrade build -m %{realname} -v %{version} 
-/usr/sbin/dkms --rpm_safe_upgrade install -m %{realname} -v %{version}
+/usr/sbin/dkms add -m %{realname} -v %{version} 
+/usr/sbin/dkms build -m %{realname} -v %{version} 
+/usr/sbin/dkms install -m %{realname} -v %{version} -q --force
 
 %preun 
 # rmmod can fail
 /sbin/rmmod %{kname} >/dev/null 2>&1 ||:
 set -x
-/usr/sbin/dkms --rpm_safe_upgrade remove -m %{realname} -v %{version} --all || :
-
-%posttrans 
-if [ -z "$DURING_INSTALL" ] ; then
-    /sbin/rmmod b43 >/dev/null 2>&1 ||:
-    /sbin/rmmod b43legacy >/dev/null 2>&1 ||:
-    /sbin/rmmod brcmfmac >/dev/null 2>&1 ||:
-    /sbin/rmmod brcmsmac >/dev/null 2>&1 ||:
-    /sbin/rmmod bcma >/dev/null 2>&1 ||:
-    /sbin/rmmod ssb >/dev/null 2>&1 ||:
-    /sbin/modprobe wl >/dev/null 2>&1 ||:
-fi
+/usr/sbin/dkms remove -m %{realname} -v %{version} -q --all || :
 
 %clean
 rm -rf %{buildroot}
@@ -120,6 +109,9 @@ rm -rf %{buildroot}
 %config %{_sysconfdir}/modprobe.d/%{name}.conf
 
 %changelog
+
+* Mon Oct 14 2019 - Unitedrpms Project <unitedrpms AT protonmail DOT com> 6.30.223.271-9
+- Modernized
 
 * Sat Jun 01 2019 - Unitedrpms Project <unitedrpms AT protonmail DOT com> 6.30.223.271-7
 - Added patch for the new wpa_supplicant
