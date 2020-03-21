@@ -3,4 +3,6 @@ BUILDROOT/*
 RPMS/*
 SPECS/*
 SRPMS/*
-hybrid-v*.tar.gz
+*.tar.gz
+*.rpm
+.directory/*
