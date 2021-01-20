@@ -14,7 +14,7 @@
 Summary:	Proprietary driver for Broadcom wireless adapters
 Name:		broadcom-wl-dkms
 Version:	6.30.223.271
-Release:	11%{?dist}
+Release:	12%{?dist}
 Source0:	https://docs.broadcom.com/docs-and-downloads/docs/linux_sta/%{oname}-nodebug-pcoem-%{dwver}.tar.gz
 Source1:	https://docs.broadcom.com/docs-and-downloads/docs/linux_sta/%{oname}_64-nodebug-pcoem-%{dwver}.tar.gz
 Source2:	broadcom-wl-dkms.conf
@@ -24,21 +24,21 @@ Requires:	dkms
 Requires:	kernel-devel
 Conflicts:	wl-kmod broadcom-wl
 
-Patch:		license.patch
-Patch1:		wl-kmod-002_kernel_3.18_null_pointer.patch
-Patch2:		wl-kmod-003_gcc_4.9_remove_TIME_DATE_macros.patch
-Patch3:		wl-kmod-004_kernel_4.3_rdtscl_to_rdtsc.patch
-Patch4:		wl-kmod-005_kernel_4.7_IEEE80211_BAND_to_NL80211_BAND.patch
-Patch5:		wl-kmod-006_gcc_6_fix_indentation_warnings.patch
-Patch6:		wl-kmod-007_kernel_4.8_add_cfg80211_scan_info_struct.patch
-Patch7:		wl-kmod-008_fix_kernel_warnings.patch
-Patch8:		wl-kmod-009_kernel_4.11_remove_last_rx_in_net_device_struct.patch
+Patch0:		license.patch
+Patch1:		011-linux59.patch
+Patch2:		wl-kmod-002_kernel_3.18_null_pointer.patch
+Patch3:		wl-kmod-003_gcc_4.9_remove_TIME_DATE_macros.patch
+Patch4:		wl-kmod-004_kernel_4.3_rdtscl_to_rdtsc.patch
+Patch5:		wl-kmod-005_kernel_4.7_IEEE80211_BAND_to_NL80211_BAND.patch
+Patch6:		wl-kmod-006_gcc_6_fix_indentation_warnings.patch
+Patch7:		wl-kmod-007_kernel_4.8_add_cfg80211_scan_info_struct.patch
+Patch8:		wl-kmod-008_fix_kernel_warnings.patch
 Patch9:		wl-kmod-010_kernel_4.12_add_cfg80211_roam_info_struct.patch
 Patch10:	wl-kmod-011_kernel_4.14_new_kernel_read_function_prototype.patch
-Patch11:	wl-kmod-012-kernel_59.patch
-Patch12:	008-linux415.patch
-Patch13:	wl-kmod-016_fix_unsupported_mesh_point.patch
-Patch14:	wl-kmod-017_kernel_5.6_adaptations.patch
+Patch11:	008-linux415.patch
+Patch12:	wl-kmod-016_fix_unsupported_mesh_point.patch
+Patch13:	wl-kmod-017_kernel_5.6_adaptations.patch
+Patch14:	wl-kmod-009_kernel_4.11_remove_last_rx_in_net_device_struct.patch
 
 # Blob is under a custom license (see LICENSE.txt), everything else
 # is GPLv2 - AdamW 2008/12
@@ -54,16 +54,34 @@ requires manual installation of firmware, or ndiswrapper.
 
 %prep
 %ifarch x86_64
-%autosetup -T -c -a1 %{oname} -p1
+%setup -T -c -a1 %{oname} 
 %else
-%autosetup -T -c -a0 %{oname} -p1
+%setup -T -c -a0 %{oname} 
 %endif
+
+%patch0 -p1
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
+%patch4 -p1
+%patch5 -p1
+%patch6 -p1
+%patch7 -p1
+%patch8 -p1
+%patch9 -p1
+%patch10 -p1
+%patch11 -p1
+%patch12 -p1
+%patch13 -p1
+%patch14 -p1
+
 
   sed -e "s/@PACKAGE_VERSION@/%{version}/" %{S:3} > dkms.conf
 
   sed -i -e "/BRCM_WLAN_IFNAME/s:eth:wlan:" src/wl/sys/wl_linux.c
 
   sed -i '/GE_49 :=/s|:= .*|:= 1|' Makefile
+  
 
 %build
 
@@ -109,6 +127,9 @@ rm -rf %{buildroot}
 %config %{_sysconfdir}/modprobe.d/%{name}.conf
 
 %changelog
+
+* Sun Jan 17 2021 - Unitedrpms Project <unitedrpms AT protonmail DOT com> 6.30.223.271-12
+- Compatibility for kernel 5.10
 
 * Wed Nov 11 2020 - Unitedrpms Project <unitedrpms AT protonmail DOT com> 6.30.223.271-11
 - Compatibility for kernel 5.9 
