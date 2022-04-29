@@ -14,7 +14,7 @@
 Summary:	Proprietary driver for Broadcom wireless adapters
 Name:		broadcom-wl-dkms
 Version:	6.30.223.271
-Release:	12%{?dist}
+Release:	13%{?dist}
 Source0:	https://docs.broadcom.com/docs-and-downloads/docs/linux_sta/%{oname}-nodebug-pcoem-%{dwver}.tar.gz
 Source1:	https://docs.broadcom.com/docs-and-downloads/docs/linux_sta/%{oname}_64-nodebug-pcoem-%{dwver}.tar.gz
 Source2:	broadcom-wl-dkms.conf
@@ -39,6 +39,7 @@ Patch11:	008-linux415.patch
 Patch12:	wl-kmod-016_fix_unsupported_mesh_point.patch
 Patch13:	wl-kmod-017_kernel_5.6_adaptations.patch
 Patch14:	wl-kmod-009_kernel_4.11_remove_last_rx_in_net_device_struct.patch
+Patch15:	broadcom-wl-fix-linux-5.17.patch
 
 # Blob is under a custom license (see LICENSE.txt), everything else
 # is GPLv2 - AdamW 2008/12
@@ -74,7 +75,7 @@ requires manual installation of firmware, or ndiswrapper.
 %patch12 -p1
 %patch13 -p1
 %patch14 -p1
-
+%patch15 -p1
 
   sed -e "s/@PACKAGE_VERSION@/%{version}/" %{S:3} > dkms.conf
 
@@ -127,6 +128,9 @@ rm -rf %{buildroot}
 %config %{_sysconfdir}/modprobe.d/%{name}.conf
 
 %changelog
+
+* Fri Apr 29 2022 - Unitedrpms Project <unitedrpms AT protonmail DOT com> 6.30.223.271-13
+- Compatibility for kernel 5.17
 
 * Sun Jan 17 2021 - Unitedrpms Project <unitedrpms AT protonmail DOT com> 6.30.223.271-12
 - Compatibility for kernel 5.10
